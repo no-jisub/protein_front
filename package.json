@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "img:webp": "bash -lc 'for f in public/images/raw/*.png; do cwebp \"$f\" -q 80 -o \"public/images/webp/$(basename \"${f%.png}\").webp\"; done'"
   },
   "dependencies": {
     "next": "16.1.0",
@@ -24,3 +25,4 @@
     "typescript": "^5"
   }
 }
+
