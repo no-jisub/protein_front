@@ -18,7 +18,7 @@ const categoryConfig = {
   protein: {
     headline: "단백질 식품, 가성비로 한 번에 비교",
     description: [
-      "같은 돈으로 더 많은 단백질, 가격·단백질·칼로리로 한눈에 비교하세요",
+      "같은 돈으로 더 많은 단백질, 가격·단백질·칼로리로 한눈에 비교하세요!",
     ],
     cards: [
       {
