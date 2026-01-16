@@ -24,19 +24,19 @@ const categoryConfig = {
       {
         id: "chicken",
         label: "닭가슴살",
-        image: "/images/chicken_breast.png",
+        image: "/images/webp/chicken_breast.webp",
         alt: "닭가슴살",
       },
       {
         id: "powder",
         label: "단백질 보충제",
-        image: "/images/protein_powder.png",
+        image: "/images/webp/protein_powder.webp",
         alt: "단백질 보충제",
       },
       {
         id: "snack",
         label: "단백질 간식",
-        image: "/images/protein_snack.png",
+        image: "/images/webp/protein_snack.webp",
         alt: "단백질 간식",
       },
     ],
