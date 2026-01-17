@@ -10,6 +10,10 @@ export type Product = {
   tags?: string[];
   shortDescription: string;
   category: "chicken";
+  cookingMethod: "grilled" | "smoked" | "sous-vide" | "steamed";
+  form: "slice" | "steak" | "cube" | "sausage";
+  taste: "plain" | "spicy" | "smoky" | "herb";
+  lowSodium: boolean;
 };
 
 export const products: Product[] = [
@@ -25,6 +29,10 @@ export const products: Product[] = [
     tags: ["저염", "부드러운 식감"],
     shortDescription: "저염 레시피로 데일리 식단에 부담 없이.",
     category: "chicken",
+    cookingMethod: "sous-vide",
+    form: "slice",
+    taste: "herb",
+    lowSodium: true,
   },
   {
     id: "chicken-02",
@@ -38,6 +46,10 @@ export const products: Product[] = [
     tags: ["수비드", "촉촉함"],
     shortDescription: "저온 수비드로 촉촉함을 살린 스테디셀러.",
     category: "chicken",
+    cookingMethod: "grilled",
+    form: "steak",
+    taste: "plain",
+    lowSodium: false,
   },
   {
     id: "chicken-03",
@@ -51,6 +63,10 @@ export const products: Product[] = [
     tags: ["허브", "샐러드"],
     shortDescription: "은은한 허브 향으로 샐러드에 잘 어울려요.",
     category: "chicken",
+    cookingMethod: "steamed",
+    form: "slice",
+    taste: "herb",
+    lowSodium: true,
   },
   {
     id: "chicken-04",
@@ -64,6 +80,10 @@ export const products: Product[] = [
     tags: ["매콤", "단백질 보강"],
     shortDescription: "매콤한 시즈닝으로 질리지 않는 맛.",
     category: "chicken",
+    cookingMethod: "grilled",
+    form: "steak",
+    taste: "spicy",
+    lowSodium: false,
   },
   {
     id: "chicken-05",
@@ -77,6 +97,10 @@ export const products: Product[] = [
     tags: ["그릴", "담백"],
     shortDescription: "직화 그릴 향으로 담백하게 즐겨요.",
     category: "chicken",
+    cookingMethod: "grilled",
+    form: "steak",
+    taste: "plain",
+    lowSodium: false,
   },
   {
     id: "chicken-06",
@@ -90,6 +114,10 @@ export const products: Product[] = [
     tags: ["찢기", "간편"],
     shortDescription: "조리 없이 바로 먹기 좋은 간편 제품.",
     category: "chicken",
+    cookingMethod: "steamed",
+    form: "cube",
+    taste: "plain",
+    lowSodium: true,
   },
   {
     id: "chicken-07",
@@ -103,6 +131,10 @@ export const products: Product[] = [
     tags: ["저지방", "고단백"],
     shortDescription: "지방을 낮추고 단백질을 높인 구성.",
     category: "chicken",
+    cookingMethod: "smoked",
+    form: "slice",
+    taste: "smoky",
+    lowSodium: false,
   },
   {
     id: "chicken-08",
@@ -116,5 +148,9 @@ export const products: Product[] = [
     tags: ["훈제", "풍미"],
     shortDescription: "훈연 향이 살아있는 풍미 중심 선택.",
     category: "chicken",
+    cookingMethod: "smoked",
+    form: "sausage",
+    taste: "smoky",
+    lowSodium: false,
   },
 ];

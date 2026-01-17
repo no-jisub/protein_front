@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { products } from "@/src/data/products";
@@ -36,9 +36,39 @@ const priceOptions: Option[] = [
 
 const proteinOptions: Option[] = [
   { value: "all", label: "단백질 전체" },
-  { value: "20", label: "20g 이상" },
-  { value: "25", label: "25g 이상" },
-  { value: "30", label: "30g 이상" },
+  { value: "20", label: "20g+" },
+  { value: "23", label: "23g+" },
+  { value: "25", label: "25g+" },
+  { value: "30", label: "30g+" },
+];
+
+const caloriesOptions: Option[] = [
+  { value: "all", label: "칼로리 전체" },
+  { value: "120", label: "120kcal-" },
+  { value: "150", label: "150kcal-" },
+  { value: "180", label: "180kcal-" },
+];
+
+const cookingOptions: Option[] = [
+  { value: "grilled", label: "Grilled" },
+  { value: "smoked", label: "Smoked" },
+  { value: "sous-vide", label: "Sous-vide" },
+  { value: "steamed", label: "Steamed" },
+];
+
+const formOptions: Option[] = [
+  { value: "slice", label: "Slice" },
+  { value: "steak", label: "Steak" },
+  { value: "cube", label: "Cube" },
+  { value: "sausage", label: "Sausage" },
+];
+
+const tasteOptions: Option[] = [
+  { value: "all", label: "Taste 전체" },
+  { value: "plain", label: "Plain" },
+  { value: "spicy", label: "Spicy" },
+  { value: "smoky", label: "Smoky" },
+  { value: "herb", label: "Herb" },
 ];
 
 function sortProducts(list: typeof products, sortKey: SortKey) {
@@ -60,22 +90,126 @@ function getOptionLabel(options: Option[], value: string) {
   return options.find((option) => option.value === value)?.label ?? value;
 }
 
+const MAX_MULTI_SELECT = 2;
+
+function parseMultiParam(value: string | null) {
+  if (!value) {
+    return [];
+  }
+  return value.split(",").map((item) => item.trim()).filter(Boolean);
+}
+
+function buildMultiParam(values: string[]) {
+  return values.length ? values.join(",") : null;
+}
+
+function toggleMultiValue(values: string[], value: string, maxCount: number) {
+  if (values.includes(value)) {
+    return values.filter((item) => item !== value);
+  }
+  if (values.length >= maxCount) {
+    return values;
+  }
+  return [...values, value];
+}
+
+function arraysEqual(a: string[], b: string[]) {
+  if (a.length !== b.length) {
+    return false;
+  }
+  return a.every((value, index) => value === b[index]);
+}
+
+type ToggleProps = {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+};
+
+function Toggle({ label, checked, onChange }: ToggleProps) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={onChange}
+      className={`flex items-center justify-between gap-3 rounded-full border px-3 py-2 text-xs font-semibold transition ${
+        checked ? "border-[#e16b4b] bg-[#fff3ee] text-[#c2543c]" : "border-black/20 text-black/70"
+      }`}
+    >
+      <span>{label}</span>
+      <span
+        className={`relative h-4 w-8 rounded-full transition ${
+          checked ? "bg-[#e16b4b]" : "bg-black/20"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition ${
+            checked ? "left-4" : "left-0.5"
+          }`}
+        />
+      </span>
+    </button>
+  );
+}
+
 export default function ProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const initialParamsRef = useRef<{
+    query: string;
+    sortKey: SortKey;
+    price: string;
+    protein: string;
+    calories: string;
+    taste: string;
+    cooking: string[];
+    form: string[];
+    valueTop: boolean;
+    lowSodium: boolean;
+  } | null>(null);
+
+  if (!initialParamsRef.current) {
+    initialParamsRef.current = {
+      query: searchParams.get("query")?.trim() ?? "",
+      sortKey: (searchParams.get("sort") as SortKey) ?? "valueForMoney",
+      price: searchParams.get("price") ?? "all",
+      protein: searchParams.get("protein") ?? "all",
+      calories: searchParams.get("calories") ?? "all",
+      taste: searchParams.get("taste") ?? "all",
+      cooking: parseMultiParam(searchParams.get("cooking")),
+      form: parseMultiParam(searchParams.get("form")),
+      valueTop: searchParams.get("valueTop") === "true",
+      lowSodium: searchParams.get("lowSodium") === "true",
+    };
+  }
+
+  const initialParams = initialParamsRef.current!;
   const category = searchParams.get("category") ?? "chicken";
   const sortKey = (searchParams.get("sort") as SortKey) ?? "valueForMoney";
   const query = searchParams.get("query")?.trim() ?? "";
   const priceFilter = searchParams.get("price") ?? "all";
   const proteinFilter = searchParams.get("protein") ?? "all";
+  const caloriesFilter = searchParams.get("calories") ?? "all";
+  const tasteFilter = searchParams.get("taste") ?? "all";
+  const cookingFilter = parseMultiParam(searchParams.get("cooking"));
+  const formFilter = parseMultiParam(searchParams.get("form"));
+  const valueTopOnly = searchParams.get("valueTop") === "true";
+  const lowSodiumOnly = searchParams.get("lowSodium") === "true";
 
-  const [searchInput, setSearchInput] = useState(query);
+  const [searchInput, setSearchInput] = useState(initialParams.query);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  const [mobileQuery, setMobileQuery] = useState(query);
-  const [mobileSort, setMobileSort] = useState<SortKey>(sortKey);
-  const [mobilePrice, setMobilePrice] = useState(priceFilter);
-  const [mobileProtein, setMobileProtein] = useState(proteinFilter);
+  const [mobileQuery, setMobileQuery] = useState(initialParams.query);
+  const [mobileSort, setMobileSort] = useState<SortKey>(initialParams.sortKey);
+  const [mobilePrice, setMobilePrice] = useState(initialParams.price);
+  const [mobileProtein, setMobileProtein] = useState(initialParams.protein);
+  const [mobileCalories, setMobileCalories] = useState(initialParams.calories);
+  const [mobileTaste, setMobileTaste] = useState(initialParams.taste);
+  const [mobileCooking, setMobileCooking] = useState(initialParams.cooking);
+  const [mobileForm, setMobileForm] = useState(initialParams.form);
+  const [mobileValueTop, setMobileValueTop] = useState(initialParams.valueTop);
+  const [mobileLowSodium, setMobileLowSodium] = useState(initialParams.lowSodium);
 
   const loweredQuery = query.toLowerCase();
 
@@ -92,16 +226,6 @@ export default function ProductsPage() {
     router.replace(queryString ? `/products?${queryString}` : "/products");
   };
 
-  useEffect(() => {
-    setSearchInput(query);
-    if (!isMobileFiltersOpen) {
-      setMobileQuery(query);
-      setMobileSort(sortKey);
-      setMobilePrice(priceFilter);
-      setMobileProtein(proteinFilter);
-    }
-  }, [isMobileFiltersOpen, priceFilter, proteinFilter, query, sortKey]);
-
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     updateParams({ query: searchInput.trim() || null });
@@ -109,30 +233,99 @@ export default function ProductsPage() {
 
   const handleMobileApply = () => {
     const trimmedQuery = mobileQuery.trim();
-    setSearchInput(trimmedQuery);
+    if (searchInput !== trimmedQuery) {
+      setSearchInput(trimmedQuery);
+    }
     updateParams({
       query: trimmedQuery || null,
       sort: mobileSort,
       price: mobilePrice,
       protein: mobileProtein,
+      calories: mobileCalories,
+      taste: mobileTaste,
+      cooking: buildMultiParam(mobileCooking),
+      form: buildMultiParam(mobileForm),
+      valueTop: mobileValueTop ? "true" : null,
+      lowSodium: mobileLowSodium ? "true" : null,
     });
     setIsMobileFiltersOpen(false);
   };
 
   const handleMobileReset = () => {
-    setMobileQuery("");
-    setMobileSort("valueForMoney");
-    setMobilePrice("all");
-    setMobileProtein("all");
+    if (mobileQuery) {
+      setMobileQuery("");
+    }
+    if (mobileSort !== "valueForMoney") {
+      setMobileSort("valueForMoney");
+    }
+    if (mobilePrice !== "all") {
+      setMobilePrice("all");
+    }
+    if (mobileProtein !== "all") {
+      setMobileProtein("all");
+    }
+    if (mobileCalories !== "all") {
+      setMobileCalories("all");
+    }
+    if (mobileTaste !== "all") {
+      setMobileTaste("all");
+    }
+    if (mobileCooking.length) {
+      setMobileCooking([]);
+    }
+    if (mobileForm.length) {
+      setMobileForm([]);
+    }
+    if (mobileValueTop) {
+      setMobileValueTop(false);
+    }
+    if (mobileLowSodium) {
+      setMobileLowSodium(false);
+    }
   };
 
   const openMobileFilters = () => {
-    setMobileQuery(query);
-    setMobileSort(sortKey);
-    setMobilePrice(priceFilter);
-    setMobileProtein(proteinFilter);
+    if (mobileQuery !== query) {
+      setMobileQuery(query);
+    }
+    if (mobileSort !== sortKey) {
+      setMobileSort(sortKey);
+    }
+    if (mobilePrice !== priceFilter) {
+      setMobilePrice(priceFilter);
+    }
+    if (mobileProtein !== proteinFilter) {
+      setMobileProtein(proteinFilter);
+    }
+    if (mobileCalories !== caloriesFilter) {
+      setMobileCalories(caloriesFilter);
+    }
+    if (mobileTaste !== tasteFilter) {
+      setMobileTaste(tasteFilter);
+    }
+    if (!arraysEqual(mobileCooking, cookingFilter)) {
+      setMobileCooking(cookingFilter);
+    }
+    if (!arraysEqual(mobileForm, formFilter)) {
+      setMobileForm(formFilter);
+    }
+    if (mobileValueTop !== valueTopOnly) {
+      setMobileValueTop(valueTopOnly);
+    }
+    if (mobileLowSodium !== lowSodiumOnly) {
+      setMobileLowSodium(lowSodiumOnly);
+    }
     setIsMobileFiltersOpen(true);
   };
+
+  const valueTopThreshold = useMemo(() => {
+    const categoryProducts = products.filter((product) => product.category === category);
+    const ratios = categoryProducts
+      .map((product) => product.protein_g / product.price)
+      .sort((a, b) => b - a);
+    const cutoffIndex = Math.min(3, ratios.length) - 1;
+    return cutoffIndex >= 0 ? ratios[cutoffIndex] : -Infinity;
+  }, [category]);
 
   const filtered = useMemo(() => {
     return products.filter((product) => {
@@ -159,17 +352,72 @@ export default function ProductsPage() {
       if (proteinFilter !== "all" && product.protein_g < Number(proteinFilter)) {
         return false;
       }
+      if (caloriesFilter !== "all" && product.calories > Number(caloriesFilter)) {
+        return false;
+      }
+      if (tasteFilter !== "all" && product.taste !== tasteFilter) {
+        return false;
+      }
+      if (cookingFilter.length && !cookingFilter.includes(product.cookingMethod)) {
+        return false;
+      }
+      if (formFilter.length && !formFilter.includes(product.form)) {
+        return false;
+      }
+      if (valueTopOnly && product.protein_g / product.price < valueTopThreshold) {
+        return false;
+      }
+      if (lowSodiumOnly && !product.lowSodium) {
+        return false;
+      }
       return true;
     });
-  }, [category, loweredQuery, priceFilter, proteinFilter, query]);
+  }, [
+    caloriesFilter,
+    category,
+    cookingFilter,
+    formFilter,
+    lowSodiumOnly,
+    loweredQuery,
+    priceFilter,
+    proteinFilter,
+    query,
+    tasteFilter,
+    valueTopOnly,
+    valueTopThreshold,
+  ]);
 
   const sorted = useMemo(() => sortProducts(filtered, sortKey), [filtered, sortKey]);
   const categoryTitle = categoryLabels[category] ?? "상품";
+  const cookingLimitReached = cookingFilter.length >= MAX_MULTI_SELECT;
+  const formLimitReached = formFilter.length >= MAX_MULTI_SELECT;
+
+  const handleCookingToggle = (value: string) => {
+    const next = toggleMultiValue(cookingFilter, value, MAX_MULTI_SELECT);
+    updateParams({ cooking: buildMultiParam(next) });
+  };
+
+  const handleFormToggle = (value: string) => {
+    const next = toggleMultiValue(formFilter, value, MAX_MULTI_SELECT);
+    updateParams({ form: buildMultiParam(next) });
+  };
   const activeChips = [
     query ? `검색: ${query}` : null,
     sortKey !== "valueForMoney" ? `정렬: ${sortLabels[sortKey]}` : null,
     priceFilter !== "all" ? `가격: ${getOptionLabel(priceOptions, priceFilter)}` : null,
     proteinFilter !== "all" ? `단백질: ${getOptionLabel(proteinOptions, proteinFilter)}` : null,
+    caloriesFilter !== "all" ? `칼로리: ${getOptionLabel(caloriesOptions, caloriesFilter)}` : null,
+    tasteFilter !== "all" ? `Taste: ${getOptionLabel(tasteOptions, tasteFilter)}` : null,
+    cookingFilter.length
+      ? `조리: ${cookingFilter
+          .map((value) => getOptionLabel(cookingOptions, value))
+          .join(", ")}`
+      : null,
+    formFilter.length
+      ? `형태: ${formFilter.map((value) => getOptionLabel(formOptions, value)).join(", ")}`
+      : null,
+    valueTopOnly ? "가성비 TOP" : null,
+    lowSodiumOnly ? "저나트륨" : null,
   ].filter(Boolean) as string[];
 
   return (
@@ -198,7 +446,18 @@ export default function ProductsPage() {
                     type="button"
                     onClick={() => {
                       setSearchInput("");
-                      updateParams({ query: null, sort: null, price: null, protein: null });
+                      updateParams({
+                        query: null,
+                        sort: null,
+                        price: null,
+                        protein: null,
+                        calories: null,
+                        taste: null,
+                        cooking: null,
+                        form: null,
+                        valueTop: null,
+                        lowSodium: null,
+                      });
                     }}
                     className="text-xs font-semibold text-black/60 transition hover:text-[#e16b4b]"
                   >
@@ -275,6 +534,115 @@ export default function ProductsPage() {
                         </option>
                       ))}
                     </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+                      칼로리
+                    </label>
+                    <select
+                      value={caloriesFilter}
+                      onChange={(event) => updateParams({ calories: event.target.value })}
+                      className="h-10 rounded-full border border-black/20 bg-white px-4 text-sm font-semibold text-black/70"
+                      aria-label="칼로리 필터"
+                    >
+                      {caloriesOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+                      Taste
+                    </label>
+                    <select
+                      value={tasteFilter}
+                      onChange={(event) => updateParams({ taste: event.target.value })}
+                      className="h-10 rounded-full border border-black/20 bg-white px-4 text-sm font-semibold text-black/70"
+                      aria-label="Taste 필터"
+                    >
+                      {tasteOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+                      조리 방식
+                    </label>
+                    <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-black/70">
+                      {cookingOptions.map((option) => {
+                        const checked = cookingFilter.includes(option.value);
+                        const disabled = !checked && cookingLimitReached;
+                        return (
+                          <label
+                            key={option.value}
+                            className={`flex items-center gap-2 rounded-full border px-3 py-2 transition ${
+                              checked ? "border-[#e16b4b] bg-[#fff3ee] text-[#c2543c]" : "border-black/15"
+                            } ${disabled ? "opacity-50" : "cursor-pointer"}`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => handleCookingToggle(option.value)}
+                              disabled={disabled}
+                              className="h-3.5 w-3.5 rounded border-black/30"
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[11px] text-black/40">Up to {MAX_MULTI_SELECT}</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+                      제품 형태
+                    </label>
+                    <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-black/70">
+                      {formOptions.map((option) => {
+                        const checked = formFilter.includes(option.value);
+                        const disabled = !checked && formLimitReached;
+                        return (
+                          <label
+                            key={option.value}
+                            className={`flex items-center gap-2 rounded-full border px-3 py-2 transition ${
+                              checked ? "border-[#e16b4b] bg-[#fff3ee] text-[#c2543c]" : "border-black/15"
+                            } ${disabled ? "opacity-50" : "cursor-pointer"}`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => handleFormToggle(option.value)}
+                              disabled={disabled}
+                              className="h-3.5 w-3.5 rounded border-black/30"
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[11px] text-black/40">Up to {MAX_MULTI_SELECT}</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+                      비교 필터
+                    </label>
+                    <div className="grid gap-2">
+                      <Toggle
+                        label="가성비 TOP"
+                        checked={valueTopOnly}
+                        onChange={() => updateParams({ valueTop: valueTopOnly ? null : "true" })}
+                      />
+                      <Toggle
+                        label="저나트륨"
+                        checked={lowSodiumOnly}
+                        onChange={() => updateParams({ lowSodium: lowSodiumOnly ? null : "true" })}
+                      />
+                    </div>
                   </div>
                 </form>
               </div>
@@ -461,6 +829,119 @@ export default function ProductsPage() {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+              칼로리
+            </label>
+            <select
+              value={mobileCalories}
+              onChange={(event) => setMobileCalories(event.target.value)}
+              className="h-10 rounded-full border border-black/20 bg-white px-4 text-sm font-semibold text-black/70"
+              aria-label="칼로리 필터"
+            >
+              {caloriesOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+              Taste
+            </label>
+            <select
+              value={mobileTaste}
+              onChange={(event) => setMobileTaste(event.target.value)}
+              className="h-10 rounded-full border border-black/20 bg-white px-4 text-sm font-semibold text-black/70"
+              aria-label="Taste 필터"
+            >
+              {tasteOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+              조리 방식
+            </label>
+            <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-black/70">
+              {cookingOptions.map((option) => {
+                const checked = mobileCooking.includes(option.value);
+                const disabled = !checked && mobileCooking.length >= MAX_MULTI_SELECT;
+                return (
+                  <label
+                    key={option.value}
+                    className={`flex items-center gap-2 rounded-full border px-3 py-2 transition ${
+                      checked ? "border-[#e16b4b] bg-[#fff3ee] text-[#c2543c]" : "border-black/15"
+                    } ${disabled ? "opacity-50" : "cursor-pointer"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() =>
+                        setMobileCooking((prev) => toggleMultiValue(prev, option.value, MAX_MULTI_SELECT))
+                      }
+                      disabled={disabled}
+                      className="h-3.5 w-3.5 rounded border-black/30"
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-black/40">Up to {MAX_MULTI_SELECT}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+              제품 형태
+            </label>
+            <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-black/70">
+              {formOptions.map((option) => {
+                const checked = mobileForm.includes(option.value);
+                const disabled = !checked && mobileForm.length >= MAX_MULTI_SELECT;
+                return (
+                  <label
+                    key={option.value}
+                    className={`flex items-center gap-2 rounded-full border px-3 py-2 transition ${
+                      checked ? "border-[#e16b4b] bg-[#fff3ee] text-[#c2543c]" : "border-black/15"
+                    } ${disabled ? "opacity-50" : "cursor-pointer"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() =>
+                        setMobileForm((prev) => toggleMultiValue(prev, option.value, MAX_MULTI_SELECT))
+                      }
+                      disabled={disabled}
+                      className="h-3.5 w-3.5 rounded border-black/30"
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-black/40">Up to {MAX_MULTI_SELECT}</p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+              비교 필터
+            </label>
+            <div className="grid gap-2">
+              <Toggle
+                label="가성비 TOP"
+                checked={mobileValueTop}
+                onChange={() => setMobileValueTop((prev) => !prev)}
+              />
+              <Toggle
+                label="저나트륨"
+                checked={mobileLowSodium}
+                onChange={() => setMobileLowSodium((prev) => !prev)}
+              />
+            </div>
           </div>
           <div className="flex items-center gap-2 pt-2">
             <button
