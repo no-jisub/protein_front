@@ -334,12 +334,12 @@ export default function ProductsPage() {
                 {sorted.map((product) => (
                   <div
                     key={product.id}
-                    className="flex h-full flex-col gap-4 rounded-2xl border border-black/10 bg-white p-4"
+                    className="flex h-full flex-row gap-3 rounded-2xl border border-black/10 bg-white p-4 sm:flex-col sm:gap-4"
                   >
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black/5">
+                    <div className="relative aspect-[4/3] basis-2/5 overflow-hidden rounded-2xl bg-black/5 sm:w-full sm:basis-auto sm:aspect-[4/3]">
                       <Image src={product.image} alt={product.name} fill className="object-cover" />
                     </div>
-                    <div className="flex flex-1 flex-col justify-between gap-4">
+                    <div className="flex basis-3/5 flex-col justify-between gap-3 sm:basis-auto sm:flex-1 sm:gap-4">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
                           {product.brand}
@@ -379,12 +379,6 @@ export default function ProductsPage() {
                             {product.calories}kcal
                           </span>
                         </div>
-                        <Link
-                          href={`/products/${product.id}`}
-                          className="self-start rounded-full border border-black/20 px-4 py-2 text-xs font-semibold transition hover:border-black/50 hover:text-[#e16b4b]"
-                        >
-                          상세보기
-                        </Link>
                       </div>
                     </div>
                   </div>
