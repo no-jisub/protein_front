@@ -175,25 +175,11 @@ export default function ProductsPage() {
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f1b16]">
       <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,64rem)_minmax(0,1fr)]">
+        <div className="grid gap-8 lg:grid-cols-[minmax(240px,1fr)_minmax(0,64rem)_minmax(240px,1fr)]">
           <div className="hidden lg:block" />
-          <div className="w-full max-w-5xl justify-self-center">
-            <nav className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
-              <Link href="/" className="transition hover:text-[#e16b4b]">
-                Home
-              </Link>
-              <span className="mx-2 text-black/30">→</span>
-              <Link href="/products" className="transition hover:text-[#e16b4b]">
-                Products
-              </Link>
-              <span className="mx-2 text-black/30">→</span>
-              <span className="text-black/70">{categoryTitle}</span>
-            </nav>
-            <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/50">
-                Products
-              </p>
-              <h1 className="mt-2 text-3xl font-semibold">{categoryTitle} 검색 결과</h1>
+          <div className="w-full max-w-6xl justify-self-center">
+            <div>
+              <h1 className="text-3xl font-semibold">{categoryTitle} 검색 결과</h1>
               <p className="mt-2 text-sm text-black/60">
                 {query ? `"${query}"` : categoryTitle} 기준 {sorted.length}개
               </p>
@@ -202,8 +188,8 @@ export default function ProductsPage() {
           <div className="hidden lg:block" />
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,64rem)_minmax(0,1fr)]">
-          <div className="hidden justify-end lg:flex">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(240px,1fr)_minmax(0,64rem)_minmax(240px,1fr)]">
+          <div className="hidden items-start lg:flex">
             <aside className="w-[240px]">
               <div className="sticky top-6 rounded-2xl border border-black/10 bg-white p-4 text-sm">
                 <div className="mb-3 flex items-center justify-between">
@@ -297,7 +283,7 @@ export default function ProductsPage() {
             </aside>
           </div>
 
-          <div className="w-full max-w-5xl min-w-0 justify-self-center">
+          <div className="w-full max-w-6xl min-w-0 justify-self-center">
             <div className="flex items-center justify-between lg:hidden">
               <button
                 type="button"

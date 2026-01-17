@@ -23,7 +23,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f1b16]">
-      <section className="mx-auto max-w-6xl px-6 py-10">
+      <section className="mx-auto max-w-7xl px-6 py-10">
         <Link href="/products?category=chicken" className="text-xs font-semibold text-black/60">
           ← 목록으로 돌아가기
         </Link>

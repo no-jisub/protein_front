@@ -62,7 +62,7 @@ export default function Home() {
 
   return (
     <main className={`${spaceGrotesk.className} min-h-screen bg-[#f7f5f0] text-[#1f1b16]`}>
-      <section className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6 md:py-10">
+      <section className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-6 md:py-10">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/50">
           Protein Compare
         </p>
@@ -156,7 +156,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-black/10">
-        <div className="mx-auto max-w-6xl px-6 py-3 text-xs text-black/60">
+        <div className="mx-auto max-w-7xl px-6 py-3 text-xs text-black/60">
           공부용 프로젝트이며 가격은 변동될 수 있습니다.
         </div>
       </footer>
