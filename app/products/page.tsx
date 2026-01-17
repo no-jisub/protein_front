@@ -174,7 +174,7 @@ export default function ProductsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f1b16]">
-      <section className="mx-auto max-w-7xl px-6 py-10">
+      <section className="mx-auto max-w-7xl px-6 pb-10 py-5">
         <div className="grid gap-8 lg:grid-cols-[minmax(240px,1fr)_minmax(0,64rem)_minmax(240px,1fr)]">
           <div className="w-full max-w-none justify-self-stretch lg:col-span-2 lg:col-start-2">
             <div>
@@ -314,7 +314,7 @@ export default function ProductsPage() {
                 조건에 맞는 상품이 없습니다.
               </div>
             ) : (
-              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {sorted.map((product) => (
                   <div
                     key={product.id}
