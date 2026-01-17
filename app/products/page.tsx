@@ -176,8 +176,7 @@ export default function ProductsPage() {
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f1b16]">
       <section className="mx-auto max-w-7xl px-6 py-10">
         <div className="grid gap-8 lg:grid-cols-[minmax(240px,1fr)_minmax(0,64rem)_minmax(240px,1fr)]">
-          <div className="hidden lg:block" />
-          <div className="w-full max-w-6xl justify-self-center">
+          <div className="w-full max-w-none justify-self-stretch lg:col-span-2 lg:col-start-2">
             <div>
               <h1 className="text-3xl font-semibold">{categoryTitle} 검색 결과</h1>
               <p className="mt-2 text-sm text-black/60">
@@ -185,10 +184,9 @@ export default function ProductsPage() {
               </p>
             </div>
           </div>
-          <div className="hidden lg:block" />
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(240px,1fr)_minmax(0,64rem)_minmax(240px,1fr)]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
           <div className="hidden items-start lg:flex">
             <aside className="w-[240px]">
               <div className="sticky top-6 rounded-2xl border border-black/10 bg-white p-4 text-sm">
@@ -283,7 +281,7 @@ export default function ProductsPage() {
             </aside>
           </div>
 
-          <div className="w-full max-w-6xl min-w-0 justify-self-center">
+          <div className="w-full max-w-none min-w-0 justify-self-stretch">
             <div className="flex items-center justify-between lg:hidden">
               <button
                 type="button"
@@ -372,7 +370,6 @@ export default function ProductsPage() {
               </div>
             )}
           </div>
-          <div className="hidden lg:block" />
         </div>
       </section>
 
