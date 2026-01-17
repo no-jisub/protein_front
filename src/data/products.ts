@@ -1,0 +1,120 @@
+export type Product = {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  image: string;
+  protein_g: number;
+  calories: number;
+  serving_size: string;
+  tags?: string[];
+  shortDescription: string;
+  category: "chicken";
+};
+
+export const products: Product[] = [
+  {
+    id: "chicken-01",
+    name: "저염 닭가슴살 큐브",
+    brand: "포켓프로틴",
+    price: 18900,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 24,
+    calories: 145,
+    serving_size: "100g",
+    tags: ["저염", "부드러운 식감"],
+    shortDescription: "저염 레시피로 데일리 식단에 부담 없이.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-02",
+    name: "수비드 닭가슴살 오리지널",
+    brand: "클린웨이",
+    price: 21800,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 27,
+    calories: 160,
+    serving_size: "110g",
+    tags: ["수비드", "촉촉함"],
+    shortDescription: "저온 수비드로 촉촉함을 살린 스테디셀러.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-03",
+    name: "허브 닭가슴살 슬라이스",
+    brand: "그린키친",
+    price: 16500,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 23,
+    calories: 150,
+    serving_size: "100g",
+    tags: ["허브", "샐러드"],
+    shortDescription: "은은한 허브 향으로 샐러드에 잘 어울려요.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-04",
+    name: "스파이시 닭가슴살 스테이크",
+    brand: "핏밀",
+    price: 19900,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 26,
+    calories: 170,
+    serving_size: "120g",
+    tags: ["매콤", "단백질 보강"],
+    shortDescription: "매콤한 시즈닝으로 질리지 않는 맛.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-05",
+    name: "그릴드 닭가슴살",
+    brand: "라이트업",
+    price: 17800,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 25,
+    calories: 155,
+    serving_size: "100g",
+    tags: ["그릴", "담백"],
+    shortDescription: "직화 그릴 향으로 담백하게 즐겨요.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-06",
+    name: "부드러운 닭가슴살 찢기",
+    brand: "헬씨데이",
+    price: 15200,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 22,
+    calories: 140,
+    serving_size: "90g",
+    tags: ["찢기", "간편"],
+    shortDescription: "조리 없이 바로 먹기 좋은 간편 제품.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-07",
+    name: "로우팻 닭가슴살",
+    brand: "밸런스랩",
+    price: 20400,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 28,
+    calories: 165,
+    serving_size: "110g",
+    tags: ["저지방", "고단백"],
+    shortDescription: "지방을 낮추고 단백질을 높인 구성.",
+    category: "chicken",
+  },
+  {
+    id: "chicken-08",
+    name: "훈제 닭가슴살",
+    brand: "스모키핏",
+    price: 17300,
+    image: "/images/webp/chicken_breast.webp",
+    protein_g: 24,
+    calories: 158,
+    serving_size: "100g",
+    tags: ["훈제", "풍미"],
+    shortDescription: "훈연 향이 살아있는 풍미 중심 선택.",
+    category: "chicken",
+  },
+];

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fraunces, Space_Grotesk } from "next/font/google";
+import type { FormEvent } from "react";
 import { useState } from "react";
 
 const fraunces = Fraunces({
@@ -26,18 +27,21 @@ const categoryConfig = {
         label: "닭가슴살",
         image: "/images/webp/chicken_breast.webp",
         alt: "닭가슴살",
+        href: "/products?category=chicken",
       },
       {
         id: "powder",
         label: "단백질 보충제",
         image: "/images/webp/protein_powder.webp",
         alt: "단백질 보충제",
+        href: "/products?category=protein",
       },
       {
         id: "snack",
         label: "단백질 간식",
         image: "/images/webp/protein_snack.webp",
         alt: "단백질 간식",
+        href: "/products?category=protein",
       },
     ],
   },
@@ -45,9 +49,9 @@ const categoryConfig = {
     headline: "제로 식품, 가성비로 한 번에 비교",
     description: ["먹어도 덜 부담되는 선택, 당·지방·칼로리 기준으로 바로 비교하세요"],
     cards: [
-      { id: "zero-drink", label: "제로 음료" },
-      { id: "zero-food", label: "제로 식품" },
-      { id: "zero-snack", label: "제로 간식" },
+      { id: "zero-drink", label: "제로 음료", href: "/products?category=zero" },
+      { id: "zero-food", label: "제로 식품", href: "/products?category=zero" },
+      { id: "zero-snack", label: "제로 간식", href: "/products?category=zero" },
     ],
   },
 } as const;
@@ -60,7 +64,7 @@ export default function Home() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const router = useRouter();
   const categoryData = categoryConfig[activeCategory];
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmedQuery = searchQuery.trim();
     if (!trimmedQuery) {
@@ -196,7 +200,7 @@ export default function Home() {
             return (
               <Link
                 key={card.id}
-                href={`/products?category=${activeCategory}`}
+                href={card.href ?? `/products?category=${activeCategory}`}
                 className={cardClassName}
                 aria-label={`${card.label} 카테고리 보기`}
               >
