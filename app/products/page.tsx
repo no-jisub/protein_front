@@ -105,19 +105,14 @@ export default function ProductsPage({ searchParams }: ProductsPageProps) {
             조건에 맞는 상품이 없습니다.
           </div>
         ) : (
-          <div className="mt-6 grid gap-4">
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {sorted.map((product) => (
               <div
                 key={product.id}
-                className="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-4 md:flex-row"
+                className="flex h-full flex-col gap-4 rounded-2xl border border-black/10 bg-white p-4"
               >
-                <div className="relative h-40 w-full overflow-hidden rounded-2xl bg-black/5 md:h-28 md:w-40">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black/5">
+                  <Image src={product.image} alt={product.name} fill className="object-cover" />
                 </div>
                 <div className="flex flex-1 flex-col justify-between gap-4">
                   <div>
@@ -139,7 +134,7 @@ export default function ProductsPage({ searchParams }: ProductsPageProps) {
                       </div>
                     ) : null}
                   </div>
-                  <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                  <div className="flex flex-col gap-3 text-sm">
                     <div className="flex flex-wrap gap-4 text-black/70">
                       <span>가격 {product.price.toLocaleString()}원</span>
                       <span>단백질 {product.protein_g}g</span>
@@ -147,7 +142,7 @@ export default function ProductsPage({ searchParams }: ProductsPageProps) {
                     </div>
                     <Link
                       href={`/products/${product.id}`}
-                      className="rounded-full border border-black/20 px-4 py-2 text-xs font-semibold transition hover:border-black/50 hover:text-[#e16b4b]"
+                      className="self-start rounded-full border border-black/20 px-4 py-2 text-xs font-semibold transition hover:border-black/50 hover:text-[#e16b4b]"
                     >
                       상세보기
                     </Link>
