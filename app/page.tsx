@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Fraunces, Space_Grotesk } from "next/font/google";
-import type { FormEvent } from "react";
 import { useState } from "react";
 
 const fraunces = Fraunces({
@@ -60,93 +58,10 @@ type CategoryKey = keyof typeof categoryConfig;
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("protein");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const router = useRouter();
   const categoryData = categoryConfig[activeCategory];
-  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) {
-      return;
-    }
-    router.push(`/products?query=${encodeURIComponent(trimmedQuery)}`);
-    setIsMobileSearchOpen(false);
-  };
 
   return (
     <main className={`${spaceGrotesk.className} min-h-screen bg-[#f7f5f0] text-[#1f1b16]`}>
-      <header className="border-b border-black/10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Protein Compare
-          </Link>
-          <nav className="hidden items-center gap-6 text-sm font-semibold md:flex">
-            <Link href="/ranking?tab=today" className="transition hover:text-[#e16b4b]">
-              🔥 오늘의 TOP
-            </Link>
-            <Link href="/products" className="transition hover:text-[#e16b4b]">
-              비교하기
-            </Link>
-            <Link href="/calculator" className="transition hover:text-[#e16b4b]">
-              계산기
-            </Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <form
-              onSubmit={handleSearchSubmit}
-              className="hidden items-center sm:flex"
-              aria-label="제품 검색"
-            >
-              <input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="제품명/브랜드 검색"
-                className="h-9 w-44 rounded-full border border-black/15 bg-white px-4 text-xs font-semibold text-black/70 transition focus:border-black/40 focus:outline-none"
-                aria-label="제품명 또는 브랜드 검색"
-              />
-            </form>
-            <button
-              type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/20 text-sm font-semibold transition hover:border-black/50 sm:hidden"
-              onClick={() => setIsMobileSearchOpen((prev) => !prev)}
-              aria-label="검색 입력 열기"
-              aria-expanded={isMobileSearchOpen}
-            >
-              🔍
-            </button>
-            <Link
-              href="/products"
-              className="rounded-full border border-black/20 px-4 py-2 text-sm font-semibold transition hover:border-black/50 hover:bg-black/5"
-            >
-              비교 시작
-            </Link>
-          </div>
-        </div>
-        {isMobileSearchOpen ? (
-          <form
-            onSubmit={handleSearchSubmit}
-            className="mx-auto flex max-w-6xl items-center gap-2 px-6 pb-4 sm:hidden"
-            aria-label="모바일 제품 검색"
-          >
-            <input
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="제품명/브랜드 검색"
-              className="h-9 w-full rounded-full border border-black/15 bg-white px-4 text-xs font-semibold text-black/70 transition focus:border-black/40 focus:outline-none"
-              aria-label="제품명 또는 브랜드 검색"
-            />
-            <button
-              type="submit"
-              className="h-9 rounded-full border border-black/20 px-4 text-xs font-semibold transition hover:border-black/50"
-              aria-label="검색 실행"
-            >
-              검색
-            </button>
-          </form>
-        ) : null}
-      </header>
-
       <section className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6 md:py-10">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/50">
           Protein Compare

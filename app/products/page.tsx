@@ -175,36 +175,55 @@ export default function ProductsPage() {
   return (
     <main className="min-h-screen bg-[#f7f5f0] text-[#1f1b16]">
       <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <nav className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
-            <Link href="/" className="transition hover:text-[#e16b4b]">
-              Home
-            </Link>
-            <span className="mx-2 text-black/30">→</span>
-            <Link href="/products" className="transition hover:text-[#e16b4b]">
-              Products
-            </Link>
-            <span className="mx-2 text-black/30">→</span>
-            <span className="text-black/70">{categoryTitle}</span>
-          </nav>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/50">
-              Products
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold">{categoryTitle} 검색 결과</h1>
-            <p className="mt-2 text-sm text-black/60">
-              {query ? `"${query}"` : categoryTitle} 기준 {sorted.length}개
-            </p>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,64rem)_minmax(0,1fr)]">
+          <div className="hidden lg:block" />
+          <div className="w-full max-w-5xl justify-self-center">
+            <nav className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+              <Link href="/" className="transition hover:text-[#e16b4b]">
+                Home
+              </Link>
+              <span className="mx-2 text-black/30">→</span>
+              <Link href="/products" className="transition hover:text-[#e16b4b]">
+                Products
+              </Link>
+              <span className="mx-2 text-black/30">→</span>
+              <span className="text-black/70">{categoryTitle}</span>
+            </nav>
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/50">
+                Products
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold">{categoryTitle} 검색 결과</h1>
+              <p className="mt-2 text-sm text-black/60">
+                {query ? `"${query}"` : categoryTitle} 기준 {sorted.length}개
+              </p>
+            </div>
           </div>
+          <div className="hidden lg:block" />
         </div>
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,64rem)_minmax(0,1fr)]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,64rem)_minmax(0,1fr)]">
           <div className="hidden justify-end lg:flex">
             <aside className="w-[240px]">
               <div className="sticky top-6 rounded-2xl border border-black/10 bg-white p-4 text-sm">
-                <form onSubmit={handleSearchSubmit} className="flex flex-col gap-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
+                    필터
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchInput("");
+                      updateParams({ query: null, sort: null, price: null, protein: null });
+                    }}
+                    className="text-xs font-semibold text-black/60 transition hover:text-[#e16b4b]"
+                  >
+                    초기화
+                  </button>
+                </div>
+                <form onSubmit={handleSearchSubmit} className="flex flex-col gap-3">
                   <input type="hidden" name="category" value={category} />
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
                       검색
                     </label>
@@ -217,12 +236,12 @@ export default function ProductsPage() {
                     />
                     <button
                       type="submit"
-                      className="h-10 rounded-full border border-black/20 px-4 font-semibold transition hover:border-black/50"
+                      className="h-9 rounded-full border border-black/20 px-4 text-xs font-semibold transition hover:border-black/50"
                     >
                       검색
                     </button>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
                       정렬
                     </label>
@@ -239,7 +258,7 @@ export default function ProductsPage() {
                       ))}
                     </select>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
                       가격
                     </label>
@@ -256,7 +275,7 @@ export default function ProductsPage() {
                       ))}
                     </select>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
                       단백질
                     </label>
@@ -273,16 +292,6 @@ export default function ProductsPage() {
                       ))}
                     </select>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchInput("");
-                      updateParams({ query: null, sort: null, price: null, protein: null });
-                    }}
-                    className="h-10 rounded-full border border-black/20 px-4 font-semibold transition hover:border-black/50"
-                  >
-                    초기화
-                  </button>
                 </form>
               </div>
             </aside>
@@ -339,7 +348,7 @@ export default function ProductsPage() {
                         <p className="mt-2 text-sm text-black/60">{product.shortDescription}</p>
                         {product.tags?.length ? (
                           <div className="mt-3 flex flex-wrap gap-2">
-                            {product.tags.map((tag) => (
+                            {product.tags.slice(0, 2).map((tag) => (
                               <span
                                 key={tag}
                                 className="rounded-full border border-black/10 px-3 py-1 text-xs font-semibold text-black/60"
@@ -347,14 +356,28 @@ export default function ProductsPage() {
                                 {tag}
                               </span>
                             ))}
+                            {product.tags.length > 2 ? (
+                              <span className="rounded-full border border-black/10 px-3 py-1 text-xs font-semibold text-black/60">
+                                +{product.tags.length - 2}
+                              </span>
+                            ) : null}
                           </div>
                         ) : null}
                       </div>
                       <div className="flex flex-col gap-3 text-sm">
-                        <div className="flex flex-wrap gap-4 text-black/70">
-                          <span>가격 {product.price.toLocaleString()}원</span>
-                          <span>단백질 {product.protein_g}g</span>
-                          <span>칼로리 {product.calories}kcal</span>
+                        <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-xs text-black/60">
+                          <span>가격</span>
+                          <span className="text-sm font-semibold text-black">
+                            {product.price.toLocaleString()}원
+                          </span>
+                          <span>단백질</span>
+                          <span className="text-sm font-semibold text-black">
+                            {product.protein_g}g
+                          </span>
+                          <span>칼로리</span>
+                          <span className="text-sm font-semibold text-black">
+                            {product.calories}kcal
+                          </span>
                         </div>
                         <Link
                           href={`/products/${product.id}`}
