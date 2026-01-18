@@ -110,7 +110,7 @@ export default function Home() {
           {categoryData.cards.map((card) => {
             const hasImage = "image" in card && Boolean(card.image);
             const cardClassName =
-              "group relative flex w-full aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-black/15 bg-white text-white transition hover:border-black/40";
+              "group relative flex w-full aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-black/15 bg-white text-white transition-colors transition-transform hover:border-black hover:scale-[1.05]";
 
             return (
               <Link

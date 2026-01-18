@@ -205,7 +205,7 @@ export default function ProductsPage() {
                 {sorted.map((product) => (
                   <div
                     key={product.id}
-                    className="flex h-full flex-row gap-3 rounded-2xl border border-black/10 bg-white p-4 sm:flex-col sm:gap-4"
+                    className="flex h-full flex-row gap-3 rounded-2xl border border-black/10 bg-white p-4 transition-colors transition-transform hover:border-black hover:scale-[1.05] sm:flex-col sm:gap-4"
                   >
                     <div className="relative aspect-[4/3] basis-2/5 overflow-hidden rounded-2xl bg-black/5 sm:w-full sm:basis-auto sm:aspect-[4/3]">
                       <Image src={product.image} alt={product.name} fill className="object-cover" />
