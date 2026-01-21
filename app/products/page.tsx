@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -203,9 +204,11 @@ export default function ProductsPage() {
             ) : (
               <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {sorted.map((product) => (
-                  <div
+                  <Link
                     key={product.id}
-                    className="flex h-full flex-row gap-3 rounded-2xl border border-black/10 bg-white p-4 transition-colors transition-transform hover:border-black hover:scale-[1.05] sm:flex-col sm:gap-4"
+                    href={`/products/${product.id}`}
+                    className="group flex h-full flex-row gap-3 rounded-2xl border border-black/10 bg-white p-4 transition hover:border-black/30 sm:flex-col sm:gap-4"
+                    aria-label={`${product.name} 상세 페이지`}
                   >
                     <div className="relative aspect-[4/3] basis-2/5 overflow-hidden rounded-2xl bg-black/5 sm:w-full sm:basis-auto sm:aspect-[4/3]">
                       <Image src={product.image} alt={product.name} fill className="object-cover" />
@@ -215,7 +218,9 @@ export default function ProductsPage() {
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-black/50">
                           {product.brand}
                         </p>
-                        <h2 className="mt-2 text-lg font-semibold">{product.name}</h2>
+                        <h2 className="mt-2 text-lg font-semibold transition group-hover:text-[#e16b4b]">
+                          {product.name}
+                        </h2>
                         <p className="mt-2 text-sm text-black/60">{product.shortDescription}</p>
                         {product.tags?.length ? (
                           <div className="mt-3 flex flex-wrap gap-2">
@@ -252,7 +257,7 @@ export default function ProductsPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
